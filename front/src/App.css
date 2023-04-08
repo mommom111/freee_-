@@ -1,0 +1,18 @@
+.App {
+  text-align: center;
+}
+
+/* header.js */
+
+.Header {
+  max-width: 1000px;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-container {
+  display: flex;
+  width: 300px;
+  justify-content: space-around;
+}

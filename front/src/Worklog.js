@@ -13,7 +13,7 @@ function Worklog() {
       ID,
       name,
     });
-    axios.post('/api/users', {ID: ID, name: name})
+    axios.post('http://127.0.0.1:5000/api/users', {ID: ID, name: name})
     .then((response) => {
       console.log(response);
     })

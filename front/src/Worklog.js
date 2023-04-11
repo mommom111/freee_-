@@ -13,12 +13,28 @@ function Worklog() {
       ID,
       name,
     });
+    
     axios.post('http://127.0.0.1:5000/api/users', {ID: ID, name: name})
     .then((response) => {
       console.log(response);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(error => {
+      if (error.response) {
+        // サーバー側でエラーが発生した場合
+        if (error.response.status === 400) {
+          // バリデーションエラーの場合
+          alert(error.response.data.message);
+        } else if (error.response.status === 401) {
+          // 認証エラーの場合
+          alert(error.response.data.message);
+        } else {
+          // その他のエラーの場合
+          alert('サーバーエラーが発生しました');
+        }
+      } else {
+        // ネットワークエラーの場合
+        alert('ネットワークエラーが発生しました');
+      }
     });
   };
 

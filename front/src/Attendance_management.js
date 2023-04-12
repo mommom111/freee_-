@@ -30,7 +30,7 @@ class Attendance_management extends Component {
         <ul>
           {/* 取得したデータの表示 */}
           {users.map(user => (
-            <li key={user.id}>{user.name}</li>
+            <li key={user.id}>{user.id}/{user.name}</li>
           ))}
         </ul>
         <Calendar />

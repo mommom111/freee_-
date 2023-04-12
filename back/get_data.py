@@ -6,20 +6,6 @@ from flask import jsonify
 app = Flask(__name__)
 CORS(app)
 
-# @app.route('/api/users', methods=['POST'])
-# def add_user():
-#     data = request.get_json()
-#     if data and 'ID' in data and 'name' in data:
-#         conn = sqlite3.connect('database.db')
-#         c = conn.cursor()
-#         c.execute("INSERT INTO users (ID, name) VALUES (?, ?)", (data['ID'], data['name']))
-#         conn.commit()
-#         conn.close()
-#         print(data)
-#         return "User added successfully"
-#     else:
-#         return "Invalid data"
-
 @app.route('/api/users', methods=['POST'])
 def add_user():
     data = request.get_json()
@@ -52,6 +38,23 @@ def get_users():
         users.append(user)
     conn.close()
     return jsonify(users)
+
+@app.route('/api/employees', methods=['POST'])
+def add_employees():
+    data = request.get_json()
+    if data is None or 'employee_id' not in data and 'name' not in data and 'phone' not in data:
+        return jsonify({'message': 'Invalid request data!'}), 400
+    with sqlite3.connect('mydb.db') as conn:
+        c = conn.cursor()
+        # Check if user already exists
+        c.execute("SELECT * FROM employees WHERE employee_id=?", (data['employee_id'],))
+        existing_user = c.fetchone()
+        if existing_user:
+            return jsonify({'message': 'User with that ID already exists!'}), 409
+        # Add user to database
+        c.execute("INSERT INTO employees (employee_id, name, phone) VALUES (?, ?, ?)", (data['employee_id'], data['name'], data['phone']))
+        conn.commit()
+    return jsonify({'message': 'User added successfully!'}), 201
 
 if __name__ == '__main__':
     app.run()

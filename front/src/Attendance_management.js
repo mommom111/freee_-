@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Calendar from "./Calendar";
+import Modal from 'react-modal';
 
 class Attendance_management extends Component {
   state = {
@@ -20,6 +22,7 @@ class Attendance_management extends Component {
 
   render() {
     const { users } = this.state;
+    Modal.setAppElement('#root');
 
     return (
       <div>
@@ -30,6 +33,7 @@ class Attendance_management extends Component {
             <li key={user.id}>{user.name}</li>
           ))}
         </ul>
+        <Calendar />
       </div>
     );
   }

@@ -74,5 +74,15 @@ def get_employees():
     conn.close()
     return jsonify(employees)
 
+@app.route('/api/shifts/<int:employee_id>/', methods=['GET'])
+def get_employee_calendar(employee_id):
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM shifts WHERE employee_id=?", (employee_id,))
+    shifts = c.fetchall()
+    conn.close()
+    return jsonify(shifts)
+
+
 if __name__ == '__main__':
     app.run()

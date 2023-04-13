@@ -40,7 +40,7 @@ def get_users():
     return jsonify(users)
 
 @app.route('/api/employees', methods=['POST'])
-def add_employees():
+def add_employee():
     data = request.get_json()
     if data is None or 'employee_id' not in data and 'name' not in data and 'phone' not in data:
         return jsonify({'message': 'Invalid request data!'}), 400
@@ -55,6 +55,24 @@ def add_employees():
         c.execute("INSERT INTO employees (employee_id, name, phone) VALUES (?, ?, ?)", (data['employee_id'], data['name'], data['phone']))
         conn.commit()
     return jsonify({'message': 'User added successfully!'}), 201
+
+@app.route('/api/employees', methods=['GET'])
+def get_employees():
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM employees")
+    rows = c.fetchall()
+    employees = []
+    for row in rows:
+        employee = {
+            "id": row[0],
+            "employee_id": row[1],
+            "name": row[2],
+            "phone": row[3]
+        }
+        employees.append(employee)
+    conn.close()
+    return jsonify(employees)
 
 if __name__ == '__main__':
     app.run()

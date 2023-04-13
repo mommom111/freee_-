@@ -1,49 +1,6 @@
 import React from 'react'
-import { useState } from 'react'
-import axios from 'axios';
 
 function Worklog() {
-
-  const [ID, setID] = useState('');
-  const [name, setName] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({
-      ID,
-      name,
-    });
-    
-    axios.post('http://127.0.0.1:5000/api/users', {ID: ID, name: name})
-    .then((response) => {
-      console.log(response);
-    })
-    .catch(error => {
-      if (error.response) {
-        // サーバー側でエラーが発生した場合
-        if (error.response.status === 400) {
-          // バリデーションエラーの場合
-          alert(error.response.data.message);
-        } else if (error.response.status === 401) {
-          // 認証エラーの場合
-          alert(error.response.data.message);
-        } else {
-          // その他のエラーの場合
-          alert('サーバーエラーが発生しました');
-        }
-      } else {
-        // ネットワークエラーの場合
-        alert('ネットワークエラーが発生しました');
-      }
-    });
-  };
-
-  const handleChangeID = (e) => {
-    setID(e.target.value);
-  };
-  const handleChangeName = (e) => {
-    setName(e.target.value);
-  };
 
   return (
     <div>
@@ -75,25 +32,6 @@ function Worklog() {
           </tr>
         </tbody>
       </table>
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="ID">ID</label>
-          <input id="ID" name="ID" value={ID} onChange={handleChangeID} />
-        </div>
-        <div>
-          <label htmlFor="name">パスワード</label>
-          <input
-            id="name"
-            name="name"
-            value={name}
-            onChange={handleChangeName}
-          />
-        </div>
-        <div>
-          <button type="submit">設定</button>
-        </div>
-      </form>
 
     </div>
   )

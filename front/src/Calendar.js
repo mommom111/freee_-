@@ -8,8 +8,10 @@ const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
 
+  // シフトデータを受け取る
   const {shiftsData} = props;
 
+  // シフトデータをイベントデータに変換する
   const shiftEvents = shiftsData.map((shift) => ({
     start: new Date(shift[2]),
     end: new Date(shift[2]),

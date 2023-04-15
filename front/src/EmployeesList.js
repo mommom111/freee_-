@@ -1,33 +1,35 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MyCalendar from './Calendar';
+import Modal from 'react-modal';
 
-class EmployeesList extends Component {
-  state = {
-    employees: [],
-    selectedEmployee: null,
-    employeeShifts: [],
-  }
+const EmployeesList = () => {
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employeeShifts, setEmployeeShifts] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedShiftType, setSelectedShiftType] = useState(null);
 
   // マウント時、データ取得
-  componentDidMount() {
+  useEffect(() => {
     axios.get('http://127.0.0.1:5000/api/employees')
       .then(response => {
         const employees = response.data;
-        this.setState({ employees });
+        setEmployees(employees);
         console.log(employees);
       })
       .catch(error => {
         console.log(error);
       });
-  }
+  }, []);
 
   // 従業員を選択したときの処理
-  handleEmployeeSelect = (employeeId) => {
+  const handleEmployeeSelect = (employeeId) => {
     axios.get(`http://127.0.0.1:5000/api/shifts/${employeeId}`)
       .then(response => {
         const employeeShifts = response.data;
-        this.setState({ selectedEmployee: employeeId, employeeShifts });
+        setSelectedEmployee(employeeId);
+        setEmployeeShifts(employeeShifts);
         console.log(employeeShifts);
       })
       .catch(error => {
@@ -35,8 +37,29 @@ class EmployeesList extends Component {
       });
   }
 
-  render() {
-    const { employees, selectedEmployee, employeeShifts } = this.state;
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  }
+
+  const handleShiftTypeSelect = (shiftType) => {
+    setSelectedShiftType(shiftType);
+  }
+
+  const handleShiftSubmit = (employeeId) => {
+    axios.post(`http://127.0.0.1:5000/api/shifts/${employeeId}`, {
+      employeeId: employeeId,
+      date: selectedDate,
+      shiftType: selectedShiftType
+    })
+    .then(response => {
+      console.log('Shift added successfully');
+    })
+    .catch(error => {
+      console.error('Error adding shift', error);
+    });
+  }
+
+  Modal.setAppElement('#root');
 
     return (
       <div>
@@ -47,7 +70,7 @@ class EmployeesList extends Component {
             {/* 従業員リストの表示 */}
             {employees.map(employee => (
               <li key={employee.id}>
-                <button onClick={() => this.handleEmployeeSelect(employee.employee_id)}>
+                <button onClick={() => handleEmployeeSelect(employee.employee_id)}>
                   {employee.name}
                 </button>
               </li>
@@ -59,13 +82,13 @@ class EmployeesList extends Component {
             <div>
               <h2>{employees.find(employee => employee.employee_id === selectedEmployee).name}のシフト</h2>
               {/* カレンダーの表示 */}
-              <MyCalendar shiftsData={employeeShifts} />
+              <MyCalendar shiftsData={employeeShifts} onDateSelect={handleDateSelect} onShiftTypeSelect={handleShiftTypeSelect}/>
+              <button onClick={handleShiftSubmit}>Submit</button>
             </div>
           )}
         </div>
       </div>
     );
   }
-}
 
 export default EmployeesList;

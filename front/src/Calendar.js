@@ -6,8 +6,17 @@ import Modal from "react-modal";
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = () => {
-  const [events, setEvents] = useState([]);
+const MyCalendar = (props) => {
+
+  const {shiftsData} = props;
+
+  const shiftEvents = shiftsData.map((shift) => ({
+    start: new Date(shift[2]),
+    end: new Date(shift[2]),
+    title: shift[3] === 'morning' ? 'Morning Shift' : 'Night Shift',
+  }));
+
+  const [events, setEvents] = useState(shiftEvents);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [shiftType, setShiftType] = useState("");

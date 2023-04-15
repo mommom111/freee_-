@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import MyCalendar from './Calendar';
 
 class EmployeesList extends Component {
   state = {
@@ -58,7 +59,7 @@ class EmployeesList extends Component {
             <div>
               <h2>{employees.find(employee => employee.employee_id === selectedEmployee).name}のシフト</h2>
               {/* カレンダーの表示 */}
-              {/* employeeShiftsを使ってカレンダーをレンダリングする */}
+              <MyCalendar shiftsData={employeeShifts} />
             </div>
           )}
         </div>

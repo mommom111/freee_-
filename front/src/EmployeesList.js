@@ -41,15 +41,46 @@ const EmployeesList = () => {
     setSelectedDate(date);
   }
 
-  const handleShiftTypeSelect = (shiftType) => {
-    setSelectedShiftType(shiftType);
-  }
+  const [shiftType, setShiftType] = useState(null);
 
-  const handleShiftSubmit = (employeeId) => {
-    axios.post(`http://127.0.0.1:5000/api/shifts/${employeeId}`, {
-      employeeId: employeeId,
-      date: selectedDate,
-      shiftType: selectedShiftType
+  const handleShiftTypeSelect = (date, shiftType) => {
+    setShiftType(shiftType);
+  
+    const updatedShiftsData = employeeShifts.map((shift) => {
+      if (shift[2] === date) {
+        shift[3] = shiftType === "morning" ? "morning" : "night";
+      }
+      return shift;
+    });
+    setEmployeeShifts(updatedShiftsData);
+    console.log("shiftType updated: ", shiftType);
+  };
+
+  // shiftTypeに値がセットされているか確認
+  useEffect(() => {
+    console.log('shiftType updated: ', shiftType);
+  }, [shiftType]);
+
+  const handleShiftSubmit = () => {
+    if (!selectedEmployee) {
+      console.error('Please select an employee');
+      return;
+    }
+  
+    if (!selectedDate) {
+      console.error('Please select a date');
+      return;
+    }
+  
+    if (!selectedShiftType) {
+      console.error('Please select a shift type');
+      return;
+    }
+  
+    axios.post(`http://127.0.0.1:5000/api/shifts/${selectedEmployee}`, {
+      employee_id: selectedEmployee,
+      shift_date: selectedDate,
+      shift_time: selectedShiftType
     })
     .then(response => {
       console.log('Shift added successfully');
@@ -82,7 +113,7 @@ const EmployeesList = () => {
             <div>
               <h2>{employees.find(employee => employee.employee_id === selectedEmployee).name}のシフト</h2>
               {/* カレンダーの表示 */}
-              <MyCalendar shiftsData={employeeShifts} onDateSelect={handleDateSelect} onShiftTypeSelect={handleShiftTypeSelect}/>
+              <MyCalendar shiftsData={employeeShifts} onDateSelect={handleDateSelect} onShiftTypeSelect={handleShiftTypeSelect} />
               <button onClick={handleShiftSubmit}>Submit</button>
             </div>
           )}

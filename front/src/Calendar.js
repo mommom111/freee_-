@@ -9,7 +9,7 @@ const localizer = momentLocalizer(moment);
 const MyCalendar = (props) => {
 
   // シフトデータを受け取る
-  const {shiftsData} = props;
+  const { shiftsData, onDateSelect, onShiftTypeSelect } = props;
 
   // シフトデータをイベントデータに変換する
   const shiftEvents = shiftsData.map((shift) => ({
@@ -27,6 +27,7 @@ const MyCalendar = (props) => {
     setSelectedDate(start);
     setModalIsOpen(true);
     setShiftType(""); // 新しく選択するたびにシフトの選択をリセットする
+    onDateSelect(start); // 選択した日付を親コンポーネントに渡す
   };
 
   const handleModalClose = () => {
@@ -38,6 +39,12 @@ const MyCalendar = (props) => {
   };
 
   const handleShiftTypeSubmit = () => {
+    if (!shiftType) {
+      alert("Please select a shift type");
+      return;
+    }
+    
+    onShiftTypeSelect(moment(selectedDate).format("YYYY-MM-DD"), shiftType === "Morning Shift" ? "morning" : "night");
     const updatedEvents = events.map((event) => {
       if (moment(event.start).isSame(selectedDate, "day")) {
         return {
@@ -48,24 +55,26 @@ const MyCalendar = (props) => {
       return event;
     });
 
+  
     const isExistingEvent = updatedEvents.some((event) =>
       moment(event.start).isSame(selectedDate, "day")
     );
-
+  
     if (isExistingEvent) {
       setEvents(updatedEvents);
     } else {
       const newEvent = {
-        start: selectedDate,
-        end: selectedDate,
+        start: new Date(selectedDate),
+        end: new Date(selectedDate),
         title: shiftType,
       };
       setEvents([...events, newEvent]);
     }
-
+  
     setModalIsOpen(false);
-    setSelectedDate("");
+    setSelectedDate(""); // null
     setShiftType("");
+    onShiftTypeSelect(); // 選択したシフトの種類を親コンポーネントに渡す
   };
 
   return (

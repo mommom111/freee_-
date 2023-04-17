@@ -32,13 +32,14 @@ const MyCalendar = (props) => {
 
   const handleModalClose = () => {
     setModalIsOpen(false);
+    setShiftType("");
   };
 
   const handleShiftTypeChange = (e) => {
     setShiftType(e.target.value);
   };
 
-  const handleShiftTypeSubmit = () => {
+  const handleShiftTypeSubmit = (value) => {
     if (!shiftType) {
       alert("Please select a shift type");
       return;
@@ -73,8 +74,8 @@ const MyCalendar = (props) => {
   
     setModalIsOpen(false);
     setSelectedDate(""); // null
-    setShiftType("");
     onShiftTypeSelect(); // 選択したシフトの種類を親コンポーネントに渡す
+    setShiftType(value);
   };
 
   return (
@@ -95,30 +96,29 @@ const MyCalendar = (props) => {
         <div>
           <h2>シフトを選択</h2>
           <div>
-            <label>
-              <input
-                type="radio"
-                name="shiftType"
-                value="Morning Shift"
-                checked={shiftType === "Morning Shift"}
-                onChange={handleShiftTypeChange}
-              />
-              朝シフト (8:00 ~ 14:00)
-            </label>
+          <label>
+            <input
+              type="radio"
+              name="shiftType"
+              value="Morning Shift"
+              checked={shiftType === "Morning Shift"}
+              onChange={handleShiftTypeChange}
+            />
+            朝シフト (8:00 ~ 14:00)
+          </label>
+          <br />
+          <label>
+            <input
+              type="radio"
+              name="shiftType"
+              value="Night Shift"
+              checked={shiftType === "Night Shift"}
+              onChange={handleShiftTypeChange}
+            />
+            夜シフト (14:00 ~ 20:00)
+          </label>
           </div>
-          <div>
-            <label>
-              <input
-                type="radio"
-                name="shiftType"
-                value="Night Shift"
-                checked={shiftType === "Night Shift"}
-                onChange={handleShiftTypeChange}
-              />
-              夜シフト (14:00 ~ 20:00)
-            </label>
-          </div>
-          <button onClick={handleShiftTypeSubmit}>設定</button>
+          <button onClick={() => handleShiftTypeSubmit(shiftType)}>設定</button>
         </div>
       </Modal>
     </div>

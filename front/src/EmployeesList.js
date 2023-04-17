@@ -44,8 +44,6 @@ const EmployeesList = () => {
   const [shiftType, setShiftType] = useState(null);
 
   const handleShiftTypeSelect = (date, shiftType) => {
-    setShiftType(shiftType);
-  
     const updatedShiftsData = employeeShifts.map((shift) => {
       if (shift[2] === date) {
         shift[3] = shiftType === "morning" ? "morning" : "night";
@@ -54,6 +52,7 @@ const EmployeesList = () => {
     });
     setEmployeeShifts(updatedShiftsData);
     console.log("shiftType updated: ", shiftType);
+    setShiftType(shiftType); // ここで setShiftType を呼び出す
   };
 
   // shiftTypeに値がセットされているか確認
@@ -67,26 +66,28 @@ const EmployeesList = () => {
       return;
     }
   
-    if (!selectedDate) {
-      console.error('Please select a date');
+    if (selectedDate.length === 0) {
+      console.error('Please select dates');
       return;
     }
   
-    if (!selectedShiftType) {
+    if (selectedShiftType === null) {
       console.error('Please select a shift type');
       return;
     }
   
-    axios.post(`http://127.0.0.1:5000/api/shifts/${selectedEmployee}`, {
-      employee_id: selectedEmployee,
-      shift_date: selectedDate,
-      shift_time: selectedShiftType
-    })
-    .then(response => {
-      console.log('Shift added successfully');
-    })
-    .catch(error => {
-      console.error('Error adding shift', error);
+    selectedDate.forEach(date => {
+      axios.post(`http://127.0.0.1:5000/api/shifts/${selectedEmployee}`, {
+        employee_id: selectedEmployee,
+        shift_date: date,
+        shift_time: selectedShiftType
+      })
+        .then(response => {
+          console.log('Shift added successfully');
+        })
+        .catch(error => {
+          console.error('Error adding shift', error);
+        });
     });
   }
 

@@ -43,7 +43,7 @@ def get_employees():
     conn.close()
     return jsonify(employees)
 
-#カレンダーのデータを取得する
+#勤務データを取得する
 @app.route('/api/shifts/<int:employee_id>/', methods=['GET'])
 def get_employee_calendar(employee_id):
     conn = sqlite3.connect('mydb.db')
@@ -52,6 +52,29 @@ def get_employee_calendar(employee_id):
     shifts = c.fetchall()
     conn.close()
     return jsonify(shifts)
+
+@app.route('/api/shifts/<int:employee_id>', methods=['POST'])
+def handle_shift_submit():
+    # リクエストからデータを取得する
+    employee_id = request.form['employee_id']
+    shift_date = request.form['shift_date']
+    shift_time = request.form['shift_time']
+
+    # SQLite3データベースに接続する
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+
+    # shiftsテーブルにデータを挿入する
+    c.execute('INSERT INTO shifts (employee_id, shift_date, shift_time) VALUES (?, ?, ?)', (employee_id, shift_date, shift_time))
+
+    # 変更をコミットする
+    conn.commit()
+
+    # データベース接続を閉じる
+    conn.close()
+
+    # 成功したことをフロントエンドに返す
+    return 'Success'
 
 
 if __name__ == '__main__':

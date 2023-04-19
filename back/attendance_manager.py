@@ -72,6 +72,15 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(text=reply_text)
         )
+        
+def handle_postback(event):
+    # ユーザーからのポストバックイベントを受信した場合の処理
+    user_id = event.source.user_id
+    payload = event.postback.data  # ポストバックデータを取得
+    
+    # ポストバックデータに従業員IDが含まれている場合は、ユーザーアカウントに従業員IDを追加
+    if payload == 'はい':
+        employee_id = event.message.text  # 従業員IDを取得
 
 
 if __name__ == "__main__":

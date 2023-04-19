@@ -2,7 +2,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, MessageAction
 import sqlite3
 
 app = Flask(__name__)
@@ -11,7 +11,6 @@ app = Flask(__name__)
 # push時、環境変数に設定する
 line_bot_api = LineBotApi('YK7yPyN4eJXc4XGdJJ/yCXQJ+dIJrSf6jlF1axLbITkXG6Vbrb8Zksb6WUi6fZeuPL3CsfId2Dz1BpgzxEqS/6C/QvQvPbuNojKVsV5qTbymgakimN+DPBXyBwpsJfiaM35QLE5KPaTI/1phWfTzzwdB04t89/1O/w1cDnyilFU=')
 handler = WebhookHandler('3abf04bcf46730e7bcb665ba2aaf4bb4')
-
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -36,21 +35,44 @@ def handle_message(event):
     conn = sqlite3.connect('mydb.db')
     c = conn.cursor()
     c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
-    employee = c.fetchall()
+    employee = c.fetchone()
     conn.close()
     
     if employee:
         # 従業員情報が存在する場合は、従業員の氏名を取得して返信
-        reply_text = 'Employee ID: {}\nName: {}'.format(employee['id'], employee['name'])
+        employee_id = employee['employee_id']
+        name = employee['name']
+        reply_text = 'Employee ID: {}\nName: {}'.format(employee['employee_id'], employee['name'])
+        buttons_template = ButtonsTemplate(
+            title='従業員情報',
+            text='Employee ID: {}\nName: {}'.format(employee_id, name),
+            actions=[
+                MessageAction(
+                    label='はい',
+                    text='はい'
+                ),
+                MessageAction(
+                    label='いいえ',
+                    text='いいえ'
+                )
+            ]
+        )
+        template_message = TemplateSendMessage(
+            alt_text='従業員情報',
+            template=buttons_template
+        )
+        line_bot_api.reply_message(
+            event.reply_token,
+            template_message
+        )
     else:
         # 従業員情報が存在しない場合は、エラーメッセージを返信
         reply_text = '従業員IDが存在しません'
-    
-    # メッセージの送信
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply_text)
-    )
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=reply_text)
+        )
+
 
 if __name__ == "__main__":
     app.run()

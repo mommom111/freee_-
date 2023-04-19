@@ -3,6 +3,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, MessageAction
+from datetime import datetime
 import sqlite3
 
 app = Flask(__name__)
@@ -19,16 +20,74 @@ def callback():
   body = request.get_data(as_text=True)
   
   try:
-      # リクエストの検証
-      handler.handle(body, signature)
+    # リクエストの検証
+    handler.handle(body, signature)
+    events = handler.parse_events(body, signature)
+    for event in events:
+      if event.type == 'message':
+        # メッセージイベントの場合
+        handle_message(event)
+      elif event.type == 'postback':
+        # ポストバックイベントの場合
+        handle_postback(event)
   except InvalidSignatureError:
-      abort(400)
+        abort(400)
+
   return 'OK'
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-  # ユーザーからのテキストメッセージを受信した場合の処理
+  # メッセージの送信者のユーザーIDを取得
+  user_id = event.source.user_id
   employee_id = event.message.text
+  
+  conn = sqlite3.connect('mydb.db')
+  c = conn.cursor()
+  c.execute('SELECT * FROM users WHERE user_id = ?', (user_id,))
+  user = c.fetchone()
+  
+  if user is not None:
+    message = event.message.text
+    if message == "出勤":
+      # ユーザーの勤務予定を取得
+      c.execute('SELECT * FROM shifts WHERE user_id = ?', (user_id,))
+      shift = c.fetchone()
+      print(shift)
+      if shift is not None:
+        # 出勤時刻を取得
+        # シフト情報を取得する
+        id = shift[0]
+        employee_id = shift[1]
+        shift_date = datetime.datetime.strptime(shift[2], '%Y-%m-%d')
+        shift_time = shift[3]
+        # "morning" と "night" に応じて出勤時間を設定する
+        if shift_time == "morning":
+          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=8, minute=0, second=0))
+        elif shift_time == "night":
+          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=14, minute=0, second=0))
+        else:
+          start_time = None
+        now = datetime.now()
+        time_difference = now - start_time
+        
+        if time_difference.total_seconds() < 600:
+          # 10分以内の場合は出勤
+          response = "出勤しました。"
+        else:
+          # 10分以上離れている場合はエラーメッセージ
+          response = "まだ勤務時間ではありません。"
+      else:
+        # 勤務予定が存在しない場合はエラーメッセージ
+        response = "勤務予定が存在しません。"
+    else:
+      # 出勤以外のメッセージに対する処理
+      response = "エラーです。"
+  else:
+    # ユーザーが存在しない場合
+    c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
+    employee = c.fetchone()
+    conn.close()
+
   
   # データベースを検索して従業員IDに対応する従業員情報を取得
   conn = sqlite3.connect('mydb.db')
@@ -100,8 +159,6 @@ def handle_postback(event):
           event.reply_token,
           TextSendMessage(text=reply_text)
       )
-
-
 
 if __name__ == "__main__":
     app.run()

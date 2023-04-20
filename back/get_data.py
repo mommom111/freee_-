@@ -2,9 +2,12 @@ from flask import Flask, request
 import sqlite3
 from flask_cors import CORS
 from flask import jsonify
+import config
 
 app = Flask(__name__)
 CORS(app)
+
+app.config.from_object(config)
 
 #従業員のデータを追加する
 @app.route('/api/employees', methods=['POST'])
@@ -78,4 +81,4 @@ def handle_shift_submit():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=8888)

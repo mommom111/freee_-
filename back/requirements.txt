@@ -1,0 +1,4 @@
+requests
+Flask
+flask_cors
+config

@@ -5,13 +5,17 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ButtonsTemplate, MessageAction
 from datetime import datetime
 import sqlite3
+import config
 
 app = Flask(__name__)
+
+app.config.from_object(config)
 
 # Line Botのチャネルアクセストークンとチャネルシークレットを設定
 # push時、環境変数に設定する
 line_bot_api = LineBotApi('チャネルアクセストークン')
 handler = WebhookHandler('チャネルシークレット')
+
 
 @app.route("/callback", methods=['POST'])
 def callback():

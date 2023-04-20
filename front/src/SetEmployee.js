@@ -16,7 +16,7 @@ function SetEmployee() {
       phone,
     });
     
-    axios.post('http://127.0.0.1:5000/api/employees', {employee_id: employee_id, name: name, phone: phone})
+    axios.post('https://freee-backend.tunnelto.dev/api/employees', {employee_id: employee_id, name: name, phone: phone})
     .then((response) => {
       console.log(response);
     })

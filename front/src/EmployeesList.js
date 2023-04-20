@@ -12,7 +12,7 @@ const EmployeesList = () => {
 
   // マウント時、データ取得
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/api/employees')
+    axios.get('https://freee-backend.tunnelto.dev/api/employees')
       .then(response => {
         const employees = response.data;
         setEmployees(employees);
@@ -25,7 +25,7 @@ const EmployeesList = () => {
 
   // 従業員を選択したときの処理
   const handleEmployeeSelect = (employeeId) => {
-    axios.get(`http://127.0.0.1:5000/api/shifts/${employeeId}`)
+    axios.get(`https://freee-backend.tunnelto.dev/api/shifts/${employeeId}`)
       .then(response => {
         const employeeShifts = response.data;
         setSelectedEmployee(employeeId);
@@ -77,7 +77,7 @@ const EmployeesList = () => {
     }
   
     selectedDate.forEach(date => {
-      axios.post(`http://127.0.0.1:5000/api/shifts/${selectedEmployee}`, {
+      axios.post(`https://freee-backend.tunnelto.dev/api/shifts/${selectedEmployee}`, {
         employee_id: selectedEmployee,
         shift_date: date,
         shift_time: selectedShiftType

@@ -3,7 +3,7 @@ import React from 'react'
 function Worklog() {
 
   return (
-    <div>
+    <div className='worklog'>
       <table border='1'>
         <tbody>
           <tr>

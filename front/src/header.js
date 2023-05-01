@@ -13,20 +13,18 @@ function header() {
 
       <div className='Header'>
         <div className='header-container'>
-          <Link to='/'>本日の勤務情報</Link>
-          <Link to='/attendance'>個人勤怠</Link>
-          <Link to='/set'>従業員登録</Link>
-          <Link to='/list'>従業員リスト</Link>
+          <Link to={`${process.env.REACT_APP_HELLO_PUBLIC_URL}`}>本日の勤務情報</Link>
+          <Link to={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/attendance`}>個人勤怠</Link>
+          <Link to={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/register`}>従業員登録</Link>
+          <Link to={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/list`}>従業員リスト</Link>
         </div>
       </div>
 
       <Routes>
-      
-      <Route path='/' element={<Worklog />} />
-      <Route path='/attendance' element={<Attendance_management />} />
-      <Route path='/set' element={<SetEmployee />} />
-      <Route path='/list' element={<EmployeesList />} />
-    
+        <Route path={`${process.env.REACT_APP_HELLO_PUBLIC_URL}`} element={<Worklog />}/>
+        <Route path={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/attendance`} element={<Attendance_management />}/>
+        <Route path={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/register`} element={<SetEmployee />}/>
+        <Route path={`${process.env.REACT_APP_HELLO_PUBLIC_URL}/list`} element={<EmployeesList />}/>
       </Routes>
 
     </BrowserRouter>

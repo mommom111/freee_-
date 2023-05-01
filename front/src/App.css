@@ -9,10 +9,132 @@
   text-align: center;
   display: flex;
   justify-content: space-between;
+  margin: auto;
+  margin-top: 50px;
 }
 
 .header-container {
   display: flex;
-  width: 300px;
+  width: 860px;
   justify-content: space-around;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 50px;
+}
+
+.header-container a {
+  padding: 8px 16px; /* ボタンの上下左右の余白 */
+  background-color: #b0d2ff; /* ボタンの背景色 */
+  color: #333; /* ボタンの文字色 */
+  font-size: 16px; /* ボタンのフォントサイズ */
+  text-decoration: none; /* ボタンの下線を削除 */
+  margin-right: 16px; /* ボタン間の右マージン */
+}
+
+.header-container a:hover {
+  background-color: #4897ff; /* ボタンのホバー時の背景色 */
+}
+
+.header-container a:active {
+  background-color: #ccc; /* ボタンのアクティブ時の背景色 */
+}
+
+/* WorkLog.js */
+.worklog table {
+  text-align: center;
+  margin: 0 auto;
+  width: 80%; /* テーブルの幅を100%にする */
+  border-collapse: collapse; /* テーブルのセルの境界線を結合する */
+}
+
+.worklog th, td {
+  border: 1px solid #333; /* セルの境界線のスタイルと色を指定 */
+  padding: 8px; /* セルの余白を指定 */
+  text-align: left; /* セルのテキストを左寄せにする */
+}
+
+.worklog th {
+  background-color: #f8f8f8; /* ヘッダーの背景色を指定 */
+  font-weight: bold; /* ヘッダーのテキストを太字にする */
+}
+
+.worklog tr:nth-child(even) {
+  background-color: #f2f2f2; /* 偶数行の背景色を指定 */
+}
+
+/* Attendance_management.js */
+.Attendance_management {
+  text-align: center;
+  margin: 0 auto;
+  width: 80%;
+}
+
+/* SetEmployee.js */
+.SetEmployee {
+  text-align: center;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.SetEmployee form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.SetEmployee-input {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.SetEmployee label {
+  font-weight: bold;
+}
+
+.SetEmployee input {
+  margin: 0 0 30px 0;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: 70%;
+  box-sizing: border-box;
+}
+
+.SetEmployee button {
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #00e808;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.SetEmployee button:hover {
+  background-color: #3e8e41;
+}
+
+/* EmployeesList.js */
+.EmployeesList {
+  text-align: left;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.EmployeesList h1 {
+  font-size: 24px;
+}
+
+.EmployeesList li {
+  list-style: none;
+}
+
+.EmployeesList li button {
+  border: none;
+  background-color: transparent;
 }

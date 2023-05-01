@@ -94,10 +94,9 @@ const EmployeesList = () => {
   Modal.setAppElement('#root');
 
     return (
-      <div>
+      <div className='EmployeesList'>
         <h1>従業員リスト</h1>
         <div>
-          <h2>シフト設定</h2>
           <ul>
             {/* 従業員リストの表示 */}
             {employees.map(employee => (

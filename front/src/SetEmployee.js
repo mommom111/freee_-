@@ -51,10 +51,10 @@ function SetEmployee() {
   };
 
   return (
-    <div>
+    <div className='SetEmployee'>
 
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className='SetEmployee-input'>
           <label htmlFor="employee_id">従業員ID</label>
           <input 
             id="employee_id"
@@ -63,7 +63,7 @@ function SetEmployee() {
             onChange={handleChangeEmployee_id} 
           />
         </div>
-        <div>
+        <div className='SetEmployee-input'>
           <label htmlFor="name">氏名</label>
           <input
             id="name"
@@ -72,7 +72,7 @@ function SetEmployee() {
             onChange={handleChangeName}
           />
         </div>
-        <div>
+        <div className='SetEmployee-input'>
           <label htmlFor="phone">電話番号</label>
           <input
             id="phone"

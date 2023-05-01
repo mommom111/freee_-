@@ -5,7 +5,7 @@ class Attendance_management extends Component {
   render() {
 
     return (
-      <div>
+      <div className='Attendance_management'>
         従業員のリストと給与を表示するページ
       </div>
     );

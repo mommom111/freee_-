@@ -102,6 +102,7 @@
   border-radius: 5px;
   width: 70%;
   box-sizing: border-box;
+  text-align: center;
 }
 
 .SetEmployee button {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import axios from 'axios';
 
 function SetEmployee() {
@@ -7,6 +7,8 @@ function SetEmployee() {
   const [employee_id, setEmployee_id] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const inputName = useRef(null);
+  const inputPhone = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,6 +52,19 @@ function SetEmployee() {
     setPhone(e.target.value);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (e.target.id === 'employee_id') {
+        inputName.current.focus();
+      } else if (e.target.id === 'name') {
+        inputPhone.current.focus();
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
+
+
   return (
     <div className='SetEmployee'>
 
@@ -61,6 +76,7 @@ function SetEmployee() {
             name="employee_id"
             value={employee_id}
             onChange={handleChangeEmployee_id} 
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div className='SetEmployee-input'>
@@ -70,6 +86,8 @@ function SetEmployee() {
             name="name"
             value={name}
             onChange={handleChangeName}
+            ref={inputName}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div className='SetEmployee-input'>
@@ -79,6 +97,8 @@ function SetEmployee() {
             name="phone"
             value={phone}
             onChange={handleChangePhone}
+            ref={inputPhone}
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div>

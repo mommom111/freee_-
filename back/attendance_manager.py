@@ -58,7 +58,6 @@ def handle_message(event):
       shift = c.fetchone()
       print(shift)
       if shift is not None:
-        # 出勤時刻を取得
         # シフト情報を取得する
         id = shift[0]
         employee_id = shift[1]
@@ -66,15 +65,15 @@ def handle_message(event):
         shift_time = shift[3]
         # "morning" と "night" に応じて出勤時間を設定する
         if shift_time == "morning":
-          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=8, minute=0, second=0))
+          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=7, minute=50, second=0))
         elif shift_time == "night":
-          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=14, minute=0, second=0))
+          start_time = datetime.datetime.combine(shift_date, datetime.time(hour=13, minute=50, second=0))
         else:
           start_time = None
+          
         now = datetime.now()
-        time_difference = now - start_time
         
-        if time_difference.total_seconds() < 600:
+        if start_time < now:
           # 10分以内の場合は出勤
           response = "出勤しました。"
         else:
@@ -83,7 +82,36 @@ def handle_message(event):
       else:
         # 勤務予定が存在しない場合はエラーメッセージ
         response = "勤務予定が存在しません。"
-    else:
+    elif message == "退勤":
+      # ユーザーの勤務予定を取得
+      c.execute('SELECT * FROM shifts WHERE user_id = ?', (user_id,))
+      shift = c.fetchone()
+      print(shift)
+      if shift is not None:
+        # シフト情報を取得する
+        id = shift[0]
+        employee_id = shift[1]
+        shift_date = datetime.datetime.strptime(shift[2], '%Y-%m-%d')
+        shift_time = shift[3]
+        # "morning" と "night" に応じて出勤時間を設定する
+        if shift_time == "morning":
+          leaving_time = datetime.datetime.combine(shift_date, datetime.time(hour=13, minute=50, second=0))
+        elif shift_time == "night":
+          leaving_time = datetime.datetime.combine(shift_date, datetime.time(hour=17, minute=50, second=0))
+        else:
+          leaving_time = None
+        now = datetime.now()
+        
+        if leaving_time < now:
+          # 10分以内の場合は出勤
+          response = "退勤しました。"
+        else:
+          # 10分以上離れている場合はエラーメッセージ
+          response = "まだ退勤時間ではありません。"
+      else:
+        # 勤務予定が存在しない場合はエラーメッセージ
+        response = "勤務予定が存在しません。"
+      
       # 出勤以外のメッセージに対する処理
       response = "エラーです。"
   else:
@@ -91,6 +119,8 @@ def handle_message(event):
     c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
     employee = c.fetchone()
     conn.close()
+    
+  
 
   
   # データベースを検索して従業員IDに対応する従業員情報を取得

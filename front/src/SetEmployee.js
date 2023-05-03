@@ -55,8 +55,10 @@ function SetEmployee() {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (e.target.id === 'employee_id') {
+        e.preventDefault();
         inputName.current.focus();
       } else if (e.target.id === 'name') {
+        e.preventDefault();
         inputPhone.current.focus();
       } else {
         handleSubmit(e);

@@ -73,8 +73,15 @@ def handle_message(event):
           
         now = datetime.now()
         
+        # 出勤時間の10分前であれば出勤時間を記録する
         if start_time < now:
-          # 10分以内の場合は出勤
+          now = datetime.now()
+          checked_in_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+          # データベースに出勤時間を追加する
+          c.execute("UPDATE shifts SET checked_in_time = ? WHERE id = ?", (checked_in_time, id))
+          conn.commit()
+          
           response = "出勤しました。"
         else:
           # 10分以上離れている場合はエラーメッセージ
@@ -82,6 +89,8 @@ def handle_message(event):
       else:
         # 勤務予定が存在しない場合はエラーメッセージ
         response = "勤務予定が存在しません。"
+        
+    # 退勤というメッセージが送られてきた場合
     elif message == "退勤":
       # ユーザーの勤務予定を取得
       c.execute('SELECT * FROM shifts WHERE user_id = ?', (user_id,))
@@ -102,8 +111,15 @@ def handle_message(event):
           leaving_time = None
         now = datetime.now()
         
+         # 退勤時間の10分前であれば退勤時間を記録する
         if leaving_time < now:
-          # 10分以内の場合は出勤
+          now = datetime.now()
+          leaving_time = now.strftime('%Y-%m-%d %H:%M:%S')
+
+          # データベースに出勤時間を追加する
+          c.execute("UPDATE shifts SET leaving_time = ? WHERE id = ?", (leaving_time, id))
+          conn.commit()
+          
           response = "退勤しました。"
         else:
           # 10分以上離れている場合はエラーメッセージ

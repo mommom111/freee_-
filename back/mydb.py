@@ -26,6 +26,14 @@ cursor.execute("""
 """)
 
 cursor.execute("""
+  ALTER TABLE shifts ADD COLUMN checked_in_time TIMESTAMP;
+""")
+
+cursor.execute("""
+  ALTER TABLE shifts ADD COLUMN leaving_time TIMESTAMP;
+""")
+
+cursor.execute("""
   CREATE TABLE IF NOT EXISTS LINE_users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id TEXT,

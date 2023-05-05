@@ -45,6 +45,8 @@ def handle_message(event):
   user_id = event.source.user_id
   employee_id = event.message.text
   
+  get_shift(user_id)
+  
   conn = sqlite3.connect('mydb.db')
   c = conn.cursor()
   c.execute('SELECT * FROM users WHERE user_id = ?', (user_id,))
@@ -82,13 +84,25 @@ def handle_message(event):
           c.execute("UPDATE shifts SET checked_in_time = ? WHERE id = ?", (checked_in_time, id))
           conn.commit()
           
-          response = "出勤しました。"
+          reply_text = '出勤しました'
+          line_bot_api.reply_message(
+          event.reply_token,
+          TextSendMessage(text=reply_text)
+          )
         else:
           # 10分以上離れている場合はエラーメッセージ
-          response = "まだ勤務時間ではありません。"
+          reply_text = "まだ勤務時間ではありません。"
+          line_bot_api.reply_message(
+          event.reply_token,
+          TextSendMessage(text=reply_text)
+          )
       else:
         # 勤務予定が存在しない場合はエラーメッセージ
-        response = "勤務予定が存在しません。"
+        reply_text = "勤務予定が存在しません。"
+        line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply_text)
+        )
         
     # 退勤というメッセージが送られてきた場合
     elif message == "退勤":
@@ -120,16 +134,32 @@ def handle_message(event):
           c.execute("UPDATE shifts SET leaving_time = ? WHERE id = ?", (leaving_time, id))
           conn.commit()
           
-          response = "退勤しました。"
+          reply_text = '退勤しました'
+          line_bot_api.reply_message(
+          event.reply_token,
+          TextSendMessage(text=reply_text)
+          )
         else:
           # 10分以上離れている場合はエラーメッセージ
-          response = "まだ退勤時間ではありません。"
+          reply_text = "まだ退勤時間ではありません。"
+          line_bot_api.reply_message(
+          event.reply_token,
+          TextSendMessage(text=reply_text)
+          )
       else:
         # 勤務予定が存在しない場合はエラーメッセージ
-        response = "勤務予定が存在しません。"
+        reply_text = "勤務予定が存在しません。"
+        line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply_text)
+        )
       
-      # 出勤以外のメッセージに対する処理
-      response = "エラーです。"
+      # 出退勤以外のメッセージに対する処理
+      reply_text = "エラーが発生しました。"
+      line_bot_api.reply_message(
+      event.reply_token,
+      TextSendMessage(text=reply_text)
+      )
   else:
     # ユーザーが存在しない場合
     c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
@@ -179,7 +209,7 @@ def handle_message(event):
       line_bot_api.reply_message(
           event.reply_token,
           TextSendMessage(text=reply_text)
-      )
+      )  
         
 def handle_postback(event):
   # ユーザーからのポストバックイベントを受信した場合の処理

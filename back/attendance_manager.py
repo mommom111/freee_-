@@ -165,16 +165,13 @@ def handle_message(event):
     c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
     employee = c.fetchone()
     conn.close()
-    
   
-
-  
-  # データベースを検索して従業員IDに対応する従業員情報を取得
-  conn = sqlite3.connect('mydb.db')
-  c = conn.cursor()
-  c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
-  employee = c.fetchone()
-  conn.close()
+    # データベースを検索して従業員IDに対応する従業員情報を取得
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM employees WHERE employee_id=?", (employee_id,))
+    employee = c.fetchone()
+    conn.close()
   
   if employee:
       # 従業員情報が存在する場合は、従業員の氏名を取得して返信
@@ -210,6 +207,37 @@ def handle_message(event):
           event.reply_token,
           TextSendMessage(text=reply_text)
       )  
+      
+def get_current_time():
+  now = datetime.now()
+  get_shift(now)
+  return now
+
+def get_shift(user_id, now):
+  conn = sqlite3.connect('mydb.db')
+  c = conn.cursor()
+  
+  c.execute('SELECT * FROM shifts WHERE user_id = ? AND start_time > ? ORDER BY start_time LIMIT 1', (user_id, now))
+  shift = c.fetchone()
+  conn.close()
+  
+  if shift is not None:
+    work_day = datetime.strptime(shift[2], '%Y-%m-%d')
+    
+    #シフトタイプによって出勤時間を設定
+    if shift[3] == 'morning':
+      check_in_time = work_day.replace(hour=8, minute=0, second=0, microsecond=0)
+    elif shift[3] == 'night':
+      check_in_time = work_day.replace(hour=20, minute=0, second=0, microsecond=0)
+      
+    checked_in_time = shift[5]
+    if check_in_time < now and checked_in_time is None:
+      line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+    
+    else:
+      return shift ### 次のシフト情報を取得する ###
+  
+      
         
 def handle_postback(event):
   # ユーザーからのポストバックイベントを受信した場合の処理

@@ -232,10 +232,13 @@ def remind_check_in_out(user_id, now, next_shift):
     #シフトタイプによって出勤時間を設定
     if next_shift[3] == 'morning':
       check_in_time = work_day.replace(hour=8, minute=0, second=0, microsecond=0)
+      check_out_time = work_day.replace(hour=14, minute=0, second=0, microsecond=0)
     elif next_shift[3] == 'night':
-      check_in_time = work_day.replace(hour=20, minute=0, second=0, microsecond=0)
+      check_in_time = work_day.replace(hour=14, minute=0, second=0, microsecond=0)
+      check_out_time = work_day.replace(hour=20, minute=0, second=0, microsecond=0)
       
     checked_in_time = next_shift[5]
+    checked_out_time = next_shift[6]
     
     # 出勤時間が過ぎても打刻がない場合は1分おきに通知する
     while(check_in_time < now and checked_in_time is None):
@@ -243,9 +246,17 @@ def remind_check_in_out(user_id, now, next_shift):
       now = datetime.now()
       if now > check_in_time and checked_in_time is None:
         line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+        
+    # 退勤時間が過ぎても打刻がない場合は1分おきに通知する
+    while(check_out_time < now and checked_out_time is None):
+      time.sleep(60)
+      now = datetime.now()
+      if now > check_out_time and checked_out_time is None:
+        line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
     
-    # 次のシフト情報を取得する
-    get_shift(user_id, now)
+    # 退勤打刻が行われた際に、次のシフト情報を取得する
+    if checked_out_time is not None:
+      get_shift(user_id, now)
       
         
 def handle_postback(event):

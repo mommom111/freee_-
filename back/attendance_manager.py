@@ -6,6 +6,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateS
 from datetime import datetime
 import sqlite3
 import config
+import time
 
 app = Flask(__name__)
 
@@ -213,30 +214,38 @@ def get_current_time():
   get_shift(now)
   return now
 
+# 次のシフトを取得する
 def get_shift(user_id, now):
   conn = sqlite3.connect('mydb.db')
   c = conn.cursor()
   
   c.execute('SELECT * FROM shifts WHERE user_id = ? AND start_time > ? ORDER BY start_time LIMIT 1', (user_id, now))
-  shift = c.fetchone()
+  next_shift = c.fetchone()
   conn.close()
+  remind_check_in_out(next_shift)
   
-  if shift is not None:
-    work_day = datetime.strptime(shift[2], '%Y-%m-%d')
+# 出退勤時間が過ぎても打刻がない場合は1分おきに通知する
+def remind_check_in_out(user_id, now, next_shift):
+  if next_shift is not None:
+    work_day = datetime.strptime(next_shift[2], '%Y-%m-%d')
     
     #シフトタイプによって出勤時間を設定
-    if shift[3] == 'morning':
+    if next_shift[3] == 'morning':
       check_in_time = work_day.replace(hour=8, minute=0, second=0, microsecond=0)
-    elif shift[3] == 'night':
+    elif next_shift[3] == 'night':
       check_in_time = work_day.replace(hour=20, minute=0, second=0, microsecond=0)
       
-    checked_in_time = shift[5]
-    if check_in_time < now and checked_in_time is None:
-      line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+    checked_in_time = next_shift[5]
     
-    else:
-      return shift ### 次のシフト情報を取得する ###
-  
+    # 出勤時間が過ぎても打刻がない場合は1分おきに通知する
+    while(check_in_time < now and checked_in_time is None):
+      time.sleep(60)
+      now = datetime.now()
+      if now > check_in_time and checked_in_time is None:
+        line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+    
+    # 次のシフト情報を取得する
+    get_shift(user_id, now)
       
         
 def handle_postback(event):

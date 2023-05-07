@@ -3,6 +3,7 @@ import sqlite3
 from flask_cors import CORS
 from flask import jsonify
 import config
+import datetime
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -67,21 +68,48 @@ def handle_shift_submit():
     shift_date = request.form['shift_date']
     shift_time = request.form['shift_time']
 
-    # SQLite3データベースに接続する
     conn = sqlite3.connect('mydb.db')
     c = conn.cursor()
 
     # shiftsテーブルにデータを挿入する
     c.execute('INSERT INTO shifts (employee_id, shift_date, shift_time) VALUES (?, ?, ?)', (employee_id, shift_date, shift_time))
-
-    # 変更をコミットする
     conn.commit()
-
-    # データベース接続を閉じる
     conn.close()
-
-    # 成功したことをフロントエンドに返す
     return 'Success'
+
+@app.route('/api/salary', methods=['GET'])
+def handle_salary():
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+    c.execute('SELECT DISTINCT employee_id FROM shifts')
+    employee_ids = c.fetchall()
+    
+    salaries = []
+    
+    for employee_id in employee_ids:
+        c.execute('SELECT name FROM employees WHERE employee_id=?', (employee_id[0],))
+        employee_name = c.fetchone()[0]
+        
+        now = datetime.datetime.now()
+        year_month = now.strftime('%Y-%m')
+        # 月の勤務時間を取得する
+        c.execute("SELECT SUM(working_hours) FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0],year_month))
+        total_working_hours = c.fetchone()[0]
+        
+        salary = {
+            "employee_id": employee_ids[0],
+            "employee_name": employee_name,
+            "total_working_hours": total_working_hours
+        }
+        salaries.append(salary)
+
+    conn.close()
+    return jsonify(salaries)
+        
+        
+    
+    conn.close()
+    return jsonify(salary)
 
 
 if __name__ == '__main__':

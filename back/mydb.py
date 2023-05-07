@@ -26,11 +26,11 @@ cursor.execute("""
 """)
 
 cursor.execute("""
-  ALTER TABLE shifts ADD COLUMN checked_in_time TIMESTAMP;
+  ALTER TABLE shifts ADD COLUMN working_hours REAL;
 """)
 
 cursor.execute("""
-  ALTER TABLE shifts ADD COLUMN leaving_time TIMESTAMP;
+  UPDATE shifts SET working_hours = strftime('%s', leaving_time) - strftime('%s', checked_in_time);
 """)
 
 cursor.execute("""

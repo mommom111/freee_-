@@ -17,6 +17,8 @@ const Attendance_management = () => {
     });
   }, []);
 
+  const monthlySalary = employeeSalary.total_working_hours * 1000;
+
   return (
     <div className='Attendance_management'>
       <h1>勤怠状況と給与ページ</h1>
@@ -31,11 +33,11 @@ const Attendance_management = () => {
       </thead>
       <tbody>
         {employeeSalary.map(salary => (
-          <tr key={salary.id}>
+          <tr>
             <td>{salary.employee_id}</td>
-            <td>{salary.name}</td>
-            <td>{salary.shift_time}</td>
-            <td>{salary.salary}</td>
+            <td>{salary.employee_name}</td>
+            <td>{salary.total_working_hours}</td>
+            <td>{monthlySalary}</td>
           </tr>
         ))}
       </tbody>

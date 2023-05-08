@@ -96,10 +96,14 @@ def handle_salary():
         c.execute("SELECT SUM(working_hours) FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0],year_month))
         total_working_hours = c.fetchone()[0]
         
+        c.execute("SELECT hourly_wage FROM employees WHERE employee_id=?", (employee_id[0],))
+        hourly_wage = c.fetchone()[0]
+        
         salary = {
             "employee_id": employee_ids[0],
             "employee_name": employee_name,
-            "total_working_hours": total_working_hours
+            "total_working_hours": total_working_hours,
+            "total_salary": total_working_hours * hourly_wage,
         }
         salaries.append(salary)
 

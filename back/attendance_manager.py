@@ -131,8 +131,10 @@ def handle_message(event):
           now = datetime.now()
           leaving_time = now.strftime('%Y-%m-%d %H:%M:%S')
 
-          # データベースに出勤時間を追加する
-          c.execute("UPDATE shifts SET leaving_time = ? WHERE id = ?", (leaving_time, id))
+          # データベースに退勤時間と時給を追加する
+          c.execute('SELECT hourly_wage FROM employees WHERE id=?', (employee_id,))
+          hourly_wage = c.fetchone()[0]
+          c.execute("UPDATE shifts SET leaving_time = ?, hourly_wage = ? WHERE employee_id = ?", (leaving_time, hourly_wage, employee_id))
           conn.commit()
           
           reply_text = '退勤しました'
@@ -245,14 +247,14 @@ def remind_check_in_out(user_id, now, next_shift):
       time.sleep(60)
       now = datetime.now()
       if now > check_in_time and checked_in_time is None:
-        line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+        line_bot_api.push_message(user_id, TextSendMessage(text='出勤打刻を完了してください'))
         
     # 退勤時間が過ぎても打刻がない場合は1分おきに通知する
     while(check_out_time < now and checked_out_time is None):
       time.sleep(60)
       now = datetime.now()
       if now > check_out_time and checked_out_time is None:
-        line_bot_api.push_message(user_id, TextSendMessage(text='打刻を完了してください'))
+        line_bot_api.push_message(user_id, TextSendMessage(text='退勤打刻を完了してください'))
     
     # 退勤打刻が行われた際に、次のシフト情報を取得する
     if checked_out_time is not None:

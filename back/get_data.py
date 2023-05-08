@@ -87,7 +87,7 @@ def handle_salary():
     salaries = []
     
     for employee_id in employee_ids:
-        c.execute('SELECT name FROM employees WHERE employee_id=?', (employee_id[0],))
+        c.execute('SELECT name FROM employees WHERE employee_id=?', (employee_id))
         employee_name = c.fetchone()[0]
         
         now = datetime.datetime.now()
@@ -96,14 +96,22 @@ def handle_salary():
         c.execute("SELECT SUM(working_hours) FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0],year_month))
         total_working_hours = c.fetchone()[0]
         
-        c.execute("SELECT hourly_wage FROM employees WHERE employee_id=?", (employee_id[0],))
-        hourly_wage = c.fetchone()[0]
+        #月給の計算
+        c.execute("SELECT * FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id, year_month))
+        shifts = c.fetchall()
+        
+        total_salary = 0
+        for shift in shifts:
+            hourly_wage = shift['hourly_wage']
+            working_hours = shift['working_hours']
+            one_time_salary = hourly_wage * working_hours
+            total_salary += one_time_salary
         
         salary = {
-            "employee_id": employee_ids[0],
+            "employee_id": employee_id,
             "employee_name": employee_name,
             "total_working_hours": total_working_hours,
-            "total_salary": total_working_hours * hourly_wage,
+            "total_salary": total_salary
         }
         salaries.append(salary)
 

@@ -118,10 +118,15 @@ def handle_salary():
     conn.close()
     return jsonify(salaries)
         
-        
-    
+@app.route('/api/hourly_wage/<int:employee_id>', methods=['POST'])
+def handle_hourly_wage(employee_id):
+    hourly_wage = request.form['hourly_wage']
+    conn = sqlite3.connect('mydb.db')
+    c = conn.cursor()
+    c.execute('UPDATE employees SET hourly_wage=? WHERE employee_id=?', (hourly_wage, employee_id))
+    conn.commit()
     conn.close()
-    return jsonify(salary)
+    return 'Success'
 
 
 if __name__ == '__main__':

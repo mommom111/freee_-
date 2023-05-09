@@ -91,6 +91,21 @@ const EmployeesList = () => {
     });
   }
 
+  const handleChangeHourlyWage = () => {
+    const hourlyWage = document.getElementById('hourly_wage').value;
+
+    axios.post(`https://freee-backend.tunnelto.dev/api/hourly_wage/${selectedEmployee}`, {
+      employee_id: selectedEmployee,
+      hourly_wage: hourlyWage
+    })
+      .then(response => {
+        console.log('Hourly wage changed successfully');
+      })
+      .catch(error => {
+        console.error('Error changing hourly wage', error);
+      });
+  }
+
   Modal.setAppElement('#root');
 
     return (
@@ -111,6 +126,10 @@ const EmployeesList = () => {
         <div>
           {selectedEmployee && (
             <div>
+              <label for="hourly_wage">時給:</label>
+              <input type="number" id="hourly_wage" name="hourly_wage" min="950" />
+              <button onClick={handleChangeHourlyWage}>変更</button>
+
               <h2>{employees.find(employee => employee.employee_id === selectedEmployee).name}のシフト</h2>
               {/* カレンダーの表示 */}
               <MyCalendar shiftsData={employeeShifts} onDateSelect={handleDateSelect} onShiftTypeSelect={handleShiftTypeSelect} />

@@ -6,11 +6,7 @@ import config
 import datetime
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/api/*": {"origins": ["http://localhost:3000"]},
-    r"/freee_-/list": {"origins": ["http://localhost:3000"]},
-    r"/freee_-/attendance": {"origins": ["http://localhost:3000"]}
-})
+CORS(app)
 
 app.config.from_object(config)
 
@@ -97,7 +93,7 @@ def handle_salary():
         total_working_hours = c.fetchone()[0]
         
         #月給の計算
-        c.execute("SELECT * FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id, year_month))
+        c.execute("SELECT * FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0], year_month))
         shifts = c.fetchall()
         
         total_salary = 0

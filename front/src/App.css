@@ -69,6 +69,10 @@
   width: 80%;
 }
 
+.Attendance_management table, tr, th, td {
+  border:none;
+}
+
 /* SetEmployee.js */
 .SetEmployee {
   text-align: center;

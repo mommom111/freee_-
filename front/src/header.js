@@ -13,18 +13,18 @@ function header() {
 
       <div className='Header'>
         <div className='header-container'>
-          <Link to=''>本日の勤務情報</Link>
-          <Link to='attendance'>個人勤怠</Link>
-          <Link to='register'>従業員登録</Link>
-          <Link to='list'>従業員リスト</Link>
+          <Link className='font-semibold rounded-lg shadow-lg shadow-blue-500/35' to='freee_-'>本日の勤務情報</Link>
+          <Link className='font-semibold rounded-lg shadow-lg shadow-blue-500/35' to='freee_-/attendance'>個人勤怠</Link>
+          <Link className='font-semibold rounded-lg shadow-lg shadow-blue-500/35' to='freee_-/register'>従業員登録</Link>
+          <Link className='font-semibold rounded-lg shadow-lg shadow-blue-500/35' to='freee_-/list'>従業員リスト</Link>
         </div>
       </div>
 
       <Routes>
-        <Route path='' element={<Worklog />}/>
-        <Route path='attendance' element={<Attendance_management />}/>
-        <Route path='register' element={<SetEmployee />}/>
-        <Route path='list' element={<EmployeesList />}/>
+        <Route path='freee_-' element={<Worklog />}/>
+        <Route path='freee_-/attendance' element={<Attendance_management />}/>
+        <Route path='freee_-/register' element={<SetEmployee />}/>
+        <Route path='freee_-/list' element={<EmployeesList />}/>
       </Routes>
 
     </BrowserRouter>

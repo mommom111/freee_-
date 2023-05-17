@@ -40,26 +40,14 @@
 }
 
 /* WorkLog.js */
-.worklog table {
+.WorkLog {
   text-align: center;
   margin: 0 auto;
-  width: 80%; /* テーブルの幅を100%にする */
-  border-collapse: collapse; /* テーブルのセルの境界線を結合する */
+  width: 80%;
 }
 
-.worklog th, td {
-  border: 1px solid #333; /* セルの境界線のスタイルと色を指定 */
-  padding: 8px; /* セルの余白を指定 */
-  text-align: left; /* セルのテキストを左寄せにする */
-}
-
-.worklog th {
-  background-color: #f8f8f8; /* ヘッダーの背景色を指定 */
-  font-weight: bold; /* ヘッダーのテキストを太字にする */
-}
-
-.worklog tr:nth-child(even) {
-  background-color: #f2f2f2; /* 偶数行の背景色を指定 */
+.WorkLog table, tr, th, td {
+  border:none;
 }
 
 /* Attendance_management.js */

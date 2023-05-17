@@ -79,7 +79,7 @@ def handle_message(event):
         # 出勤時間の10分前であれば出勤時間を記録する
         if start_time < now:
           now = datetime.now()
-          checked_in_time = now.strftime('%Y-%m-%d %H:%M:%S')
+          checked_in_time = now.strftime('%H:%M:%S')
 
           # データベースに出勤時間を追加する
           c.execute("UPDATE shifts SET checked_in_time = ? WHERE id = ?", (checked_in_time, id))
@@ -129,7 +129,7 @@ def handle_message(event):
          # 退勤時間の10分前であれば退勤時間を記録する
         if leaving_time < now:
           now = datetime.now()
-          leaving_time = now.strftime('%Y-%m-%d %H:%M:%S')
+          leaving_time = now.strftime('%H:%M:%S')
 
           # データベースに退勤時間と時給を追加する
           c.execute('SELECT hourly_wage FROM employees WHERE id=?', (employee_id,))

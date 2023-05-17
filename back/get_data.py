@@ -91,6 +91,7 @@ def handle_salary():
         # 月の勤務時間を取得する
         c.execute("SELECT SUM(working_hours) FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0],year_month))
         total_working_hours = c.fetchone()[0]
+        print(total_working_hours)
         
         #月給の計算
         c.execute("SELECT * FROM shifts WHERE employee_id=? AND strftime('%Y-%m', shift_date)=?", (employee_id[0], year_month))

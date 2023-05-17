@@ -19,9 +19,8 @@ const Attendance_management = () => {
 
   return (
     <div className='Attendance_management'>
-      <h1 className='font-mono'>勤怠状況と給与ページ</h1>
-      
-      <table className='min-w-full bg-slate-100 ' style={{border: 'none'}}>
+      <h1 className='font-mono my-5'>勤怠状況と給与ページ</h1>
+      <table className='min-w-full bg-slate-100 '>
         <thead>
           <tr>
             <th className='px-6 py-3 text-xs font-bold text-left text-gray-500 uppercase'>従業員ID</th>
@@ -33,10 +32,10 @@ const Attendance_management = () => {
         <tbody className='bg-white'>
           {employeeSalary.map(salary => (
             <tr>
-              <td className='px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap'>{salary.employee_id}</td>
-              <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{salary.employee_name}</td>
-              <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{salary.total_working_hours}</td>
-              <td className='px-6 py-4 text-sm text-gray-800 whitespace-nowrap'>{salary.total_salary}</td>
+              <td className='px-6 py-5 text-base text-left text-gray-800 whitespace-nowrap'>{salary.employee_id}</td>
+              <td className='px-6 py-5 text-base text-left text-gray-800 whitespace-nowrap'>{salary.employee_name}</td>
+              <td className='px-6 py-5 text-base text-left text-gray-800 whitespace-nowrap'>{salary.total_working_hours}</td>
+              <td className='px-6 py-5 text-base text-left text-gray-800 whitespace-nowrap'>{salary.total_salary}</td>
             </tr>
           ))}
         </tbody>
